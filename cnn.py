@@ -1,3 +1,9 @@
+'''
+CNN 클래스 신경망 구조 구현 부분 코드(CNN, DATA)와 학습코드 등 일부분은
+'코딩셰프의 3분 딥러닝 케라스맛'책의 예제 코드를 참고했습니다
+https://github.com/jskDr/keraspp
+'''
+
 import os
 import random
 import pickle as pkl

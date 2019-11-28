@@ -1,3 +1,8 @@
+'''
+함수 구현은 '코딩셰프의 3분 딥러닝 케라스맛'책의 예제 코드를 참고했습니다
+https://github.com/jskDr/keraspp
+'''
+
 import os
 import numpy as np
 import matplotlib.pyplot as plt
