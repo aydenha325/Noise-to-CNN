@@ -113,7 +113,7 @@ def noise_data(ratio):
 
 
 # 노이즈 인식 테스트
-def test_noise(ratio):
+def test_noise(ratio, sample):
     data = DATA()
     model = CNN(data.input_shape, data.num_classes)
     model.load_weights('mnist_cnn_weights.h5')
@@ -129,7 +129,7 @@ def test_noise(ratio):
     print('Noise ratio:', ratio)
     print('Test loss:', score[0])
     print('Test accuracy:', score[1])
-
+    res_score = score[0], score[1]
 
     # 정답, 오답 확인을 위한 레이블 생성
     predicted_result = model.predict(x_test)
@@ -145,9 +145,12 @@ def test_noise(ratio):
     plt.show()
     '''
 
-    # 정답, 오답 확인
+    # 정답, 오답 확인 및 숫자별 인식률 확인
     correct_result = []
     wrong_result = []
+    each_num = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    each_num_correct = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
     for iscorrect in range(2):
         if not iscorrect:
             result_list = correct_result
@@ -158,35 +161,58 @@ def test_noise(ratio):
             if not iscorrect:
                 if predicted_labels[n] == test_labels[n]:
                     result_list.append(n)
+                    each_num[test_labels[n]] = each_num[test_labels[n]]+1
+                    each_num_correct[test_labels[n]] = each_num_correct[test_labels[n]]+1
             else:
                 if predicted_labels[n] != test_labels[n]:
                     result_list.append(n)
+                    each_num[test_labels[n]] = each_num[test_labels[n]]+1
 
-        samples = random.choices(population=result_list, k=16)
-        count = 0
-        nrows = ncols = 4
-        plt.figure(figsize=(12, 8))
+        if sample:
+            samples = random.choices(population=result_list, k=16)
+            count = 0
+            nrows = ncols = 4
+            plt.figure(figsize=(12, 8))
 
-        for n in samples:
-            count += 1
-            plt.subplot(nrows, ncols, count)
-            plt.imshow(x_test[n].reshape(28, 28), cmap='Greys', interpolation='nearest')
-            tmp = "Label:" + str(test_labels[n]) + ", Prediction:" + str(predicted_labels[n])
-            plt.title(tmp)
+            for n in samples:
+                count += 1
+                plt.subplot(nrows, ncols, count)
+                plt.imshow(x_test[n].reshape(28, 28), cmap='Greys', interpolation='nearest')
+                tmp = "Label:" + str(test_labels[n]) + ", Prediction:" + str(predicted_labels[n])
+                plt.title(tmp)
 
-        plt.tight_layout()
-        plt.show()
+            plt.tight_layout()
+            plt.show()
 
-    return {ratio: f'Test loss:{score[0]} | Test accuracy:{score[1]}'}
+    res_each_num = []
+    for num in range(10):
+        percent_num = (each_num_correct[num] / each_num[num]) * 100
+        res_each_num.append(percent_num)
+
+    return res_score, res_each_num
 
 
-def main(ratio=0):
-    if not ratio:
-        test_noise(ratio)
+def main(ratio=0, sample=False, loop=False):
+    result = []
+    if loop:
+        for ratio in range(100):
+            result.append(test_noise(ratio, sample))
     else:
-        test_noise(ratio)
+        result = test_noise(ratio, sample)
+    return result
+
+
+def _save():
+    sample = False
+    loop = True
+
+    res = main(0, sample, loop)
+    with open('result.pickle', 'wb') as f:
+        pkl.dump(res, f)
+    print('\nDone!')
 
 
 if __name__ == '__main__':
-    ratio = 1
-    main(ratio)
+    ratio = 0
+    sample = True
+    main(ratio, sample)
