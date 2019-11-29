@@ -24,6 +24,6 @@ def img_show(idx, noise_ratio=0):
 
 
 if __name__ == '__main__':
-    idx = 4870
-    noise_ratio = 15
-    img_show(idx, noise_ratio)
+    idx = 0
+    ratio = 0
+    img_show(idx, ratio)
