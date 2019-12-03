@@ -202,6 +202,7 @@ def main(ratio=0, sample=False, loop=False):
     return result
 
 
+# 시험 결과 저장
 def _save():
     sample = False
     loop = True
@@ -215,4 +216,5 @@ def _save():
 if __name__ == '__main__':
     ratio = 0
     sample = True
-    main(ratio, sample)
+    res = main(ratio, sample)
+    print(res)
