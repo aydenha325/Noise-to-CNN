@@ -93,4 +93,5 @@ def main_noise(noise_ratio):
 
 
 if __name__ == '__main__':
-    pass
+    for ratio in range(100):
+	    main_noise(ratio)
